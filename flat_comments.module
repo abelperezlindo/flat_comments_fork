@@ -7,6 +7,7 @@
 use Drupal\comment\CommentInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Messenger;
 
 /**
  * Implements hook_help().
@@ -109,9 +110,22 @@ function flat_comments_comment_links_alter(
 }
 
 function flat_comments_user_insert(\Drupal\user\UserInterface $user) {
-  \Drupal\node\Entity\Node::create([
+  if(!$user->hasRole('authenticated')) return;
+
+  $user->addRole('emprendedor');
+  $user->save();
+  $nodo = \Drupal\node\Entity\Node::create([
     'type' => 'tienda',
     'title' => 'tienda usuario: ' . $user->id(),
+    'body' => array(
+      'value' => t('Esta es la tienda de ').$user->getUsername(),
+      'format' => 'basic_html',
+      ),
+    'status' => 0,
     'uid' => $user->id(),
-  ])->save();
+  ]);
+  $nodo->save();
+  Drupal::messenger()->addMessage(t('Se agrego el rol emprendedor y se creo una tienda por defecto para %user',['%user' => $user->getUsername()]));
+  #### ONLY DEVEL ####
+  //dpm($user);
 }
