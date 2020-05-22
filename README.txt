@@ -1,3 +1,5 @@
+Se tomó el modulo  flatcomments porteado a d8 por David Valdez (https://www.drupal.org/u/gnuget) y se modifico para adaptarlo a un proyecto particular. 
+
 flat_comments is a small module that allows you to force comments to always be
 replies to the node, not other comments.
 
